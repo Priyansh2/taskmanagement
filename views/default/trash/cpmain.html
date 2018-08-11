@@ -1,0 +1,138 @@
+{{extend 'layout.html'}}
+<link href="{{=URL('static','css/main.css')}}" rel="stylesheet">
+<script type="text/javascript">
+function pop(div) {
+	document.getElementById(div).style.display = 'block';
+}
+function hide(div) {
+	document.getElementById(div).style.display = 'none';
+}
+document.onkeydown = function(evt) {
+	evt = evt || window.event;
+	if (evt.keyCode == 27) {
+		hide('create_task');
+	}
+};
+</script>
+
+
+<select id="select">
+    {{for i in store:}}
+	<h1>"{{=i.email}}","{{=project.name}}",{{=request.args(0)}},{{=i.id}}")',{{=i.first_name}},{{=i.last_name}}</h1>
+    {{if i.id!=auth.user.id:}}    
+	<option onClick='add_member("{{=i.email}}","{{=project.name}}","{{=auth.user.first_name}}","{{=auth.user.last_name}},{{=request.args(0)}},{{=i.id}}")'>{{=i.first_name}} {{=i.last_name}}</option>
+    {{pass}}
+    {{pass}}
+</select>
+
+
+
+<div id="set">
+	<button onClick="pop('create_task')">Add a Task</button>
+</div>
+<div id='create_task'>
+	{{=form}}
+	<!--p>Title</p><input class='inputs' id="name_param" name="name"/><br>
+	 <input class='inputs' id="age_param" name="age"/-->
+</div>
+
+<ul class="hello1">
+	{{for task in tasks:}}
+	{{i=0}}
+	<li>
+		<div class="hello">
+			<h3>{{=task.title}}</h3>
+            <br>
+			{{=A('Add a Subtask',_href=URL('default','checklist',args=[request.args(0),task.id]),_class="btn btn-primary")}}
+            
+            
+			{{for subtask in subtasks:
+			if subtask.tid==task.id:
+			i=i+1}}
+			{{if subtask.status==1:}}
+			<div class="done" id="main_{{=subtask.id}}">
+			{{else:}}
+			<div class="todo" id="main_{{=subtask.id}}">
+					{{pass}}
+					<br>
+                <p>{{=i}}.){{=subtask.description}}</p>
+					<br>
+                <a class="delete" onClick='funct({{=subtask.id}})'>Delete</a>
+					<a class="donebutton" onClick='done({{=subtask.id}})'>Done</a>
+					 <select id="move">
+						{{for others in tasks:}}
+						{{if others.title != task.title:}}
+					   		<option onclick='move({{=subtask.id}},{{=others.id}},{{=task.id}})'>{{=others.title}}</option>
+						{{pass}}
+						{{pass}}
+					 </select> 
+				</div>
+				{{pass}}
+				{{pass}}
+                <br>
+				<p>Created by.. {{=task.created_by.first_name}} {{=prettydate(task.created_on)}}</p>	
+			</div>
+	</li>
+	{{pass}}
+</ul>
+
+<div id="notifications">
+	<h1></h1>
+</div>
+<script>
+
+
+function funct(commid){
+	var hr = new XMLHttpRequest();
+	var url = "{{=URL('changeitall')}}";
+		var vars = "commid="+commid
+		hr.open("POST",url, true);
+	hr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	hr.onreadystatechange = function() {
+		if(hr.readyState == 4 && hr.status == 200) {
+			var return_data = hr.responseText;
+			var element = document.getElementById('main_' + commid);
+			element.parentNode.removeChild(element);
+		}
+	};
+	hr.send(vars); 
+}
+
+function done(commid){
+	var hr = new XMLHttpRequest();
+	var url = "{{=URL('done')}}";
+	var vars = "commid="+commid
+		hr.open("POST",url, true);
+	hr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	hr.onreadystatechange = function() {
+		console.log(hr.readyState)
+			if(hr.readyState == 4 && hr.status == 200) {
+				var return_data = hr.responseText;				
+				$('#main_' + commid + ' > p:nth-child(1)').css('text-decoration', 'line-through');
+			}
+	};
+	hr.send(vars); 
+}
+
+function add_member(emailto,project_name,sender_fname,sender_lname,uid,pid){
+	var hr = new XMLHttpRequest();
+	var url = "{{=URL('add_member')}}";
+		var vars = "emailto="+emailto+"&project_name="+project_name+"&sender_fname="+sender_fname+"&sender_lname="+sender_lname+"&uid="+uid+"&pid="+pid
+		hr.open("POST",url, true);
+	hr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	hr.onreadystatechange = function() {
+		if(hr.readyState == 4 && hr.status == 200) {
+			var return_data = hr.responseText;
+		}
+	};
+	hr.send(vars); 
+}
+</script>
+
+
+
+
+
+
+
+

@@ -1,0 +1,10 @@
+{{extend 'layout.html'}}
+<link href="{{=URL('static','css/home.css')}}" rel="stylesheet">
+{{=msg}}
+
+<div id="head1"><h1>Accomplish more, every day.</h1></div>
+<div id="head2"><p>Millons of people rely on <b><i>Project Chaperon</i></b> to get things done...</p></div>
+
+<div id="approval">
+{{=A('Click Here To Approve',_href=URL('default','add_approved',args=(request.vars.uid,request.vars.pid)),_class="btn btn-primary")}}
+</div>

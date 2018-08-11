@@ -1,0 +1,60 @@
+{{extend 'layout.html'}}
+<link href="{{=URL('static','css/start.css')}}" rel="stylesheet">
+<script type="text/javascript">
+function pop(div,div2,div3) {
+//	var v = "{{=is_clicked}}";
+//	console.log(v);
+//	if (v == "True") {
+//	document.getElementById(div2).style.display = 'none';
+//	}
+	document.getElementById(div).style.display = 'block';
+	document.getElementById(div2).style.display = 'none';
+	document.getElementById(div3).style.display = 'none';
+    document.getElementById('fade').style.display='block';
+}
+document.onkeydown = function(evt) {
+	evt = evt || window.event;
+	if (evt.keyCode == 27) {
+		document.getElementById('login').style.display = 'none';
+		document.getElementById('reg').style.display = 'none';
+		document.getElementById('lost').style.display = 'none';
+		document.getElementById('fade').style.display = 'none';
+		}
+};
+</script>
+
+<body>
+<div id="fade" class="black_overlay"></div>
+<div id="head1"><h1>Move Work Forward</h1></div>
+<div id="head2"><p>Project Chaperon is the easiest way for teams to track their work and get results</p></div>
+
+<div id='baap'>
+	<div class='forms' id='lost' style="background-color:black;">
+		{{=flpswd}}
+	</div>
+	<div class='forms' id='reg' style="background-color:black;">
+		{{=fregister}}
+	</div>
+	<div class='forms' id='login' style="background-color:black;">
+		{{=flogin}}
+		<button id="button3"  onClick="pop('lost','login','reg')">Lost password</button>
+        </div>
+</div> 
+
+
+<div id='down'>
+	<img src="/login/static/images/down1.jpg" alt="IMG1"  class="imgs" id="img1" />
+	<img src="/login/static/images/down222.jpg" alt="IMG1"  class="imgs" id="img2" />
+	<img src="/login/static/images/down3.jpg" alt="IMG1"  class="imgs" id="img3" />
+</div>
+{{block page_js}}
+<script>
+jQuery("#web2py_user_form input:visible:enabled:first").focus();
+{{if request.args(0)=='register':}}
+web2py_validate_entropy(jQuery('#auth_user_password'),100);
+{{elif request.args(0)=='change_password':}}
+web2py_validate_entropy(jQuery('#no_table_new_password'),100);
+{{pass}}
+</script>
+{{end page_js}}
+</body>

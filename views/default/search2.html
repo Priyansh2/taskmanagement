@@ -1,0 +1,17 @@
+{{extend 'layout.html'}}
+<link href="{{=URL('static','css/home.css')}}" rel="stylesheet">
+<br>
+
+<button id="search2" onclick="location.href = 'http://127.0.0.1:8000/project1/default/home';">See All Projects</button>
+<br>
+<br>
+<br>
+<h3 id="search21">Search Projects By Title</h3>
+{{=form1}}<br />{{=target_div1}}
+<br>
+<h3 id="search22">Search Projects By Username</h3>
+{{=form2}}<br />{{=target_div2}}
+<br>
+<h3 id="search23">Random Search Of Projects</h3>
+{{=form3}}<br />{{=target_div3}}
+<br>

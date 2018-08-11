@@ -1,0 +1,99 @@
+{{extend 'layout.html'}}
+<link  href="http://fonts.googleapis.com/css?family=Reenie+Beanie:regular" rel="stylesheet" type="text/css"> 
+<link href="{{=URL('static','css/home.css')}}" rel="stylesheet">
+<script type="text/javascript">
+var resuable;
+function pop(div) {
+	document.getElementById(div).style.display = 'block';
+}
+function pop2(div,pid) {
+	document.getElementById(div).style.display = 'block';
+	reusable=pid;
+}
+function hide(div) {
+	document.getElementById(div).style.display = 'none';
+}
+function hidepoped() {
+	document.getElementById('access_denied').style.display = 'none';
+}
+document.onkeydown = function(evt) {
+	evt = evt || window.event;
+	if (evt.keyCode == 27) {
+		hide('create_task');
+	}
+};
+function ask_permission(uid){
+	var hr = new XMLHttpRequest();
+	var url = "{{=URL('asktocontri')}}";
+	var vars = "pid="+reusable+"&uid="+uid
+	hr.open("POST",url, true);
+	hr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	hr.onreadystatechange = function() {
+		if(hr.readyState == 4 && hr.status == 200) {
+			var return_data = hr.responseText;
+			hide('access_denied');
+			pop('mail_sent');
+		}
+	};
+	hr.send(vars); 
+}
+</script>
+
+<div id="mail_sent">
+	<p class="cancel" onClick="hide('mail_sent')">X</p>
+	<p><b>A mail has been Successufully send to the the owner to Consider you to contribute to his project.</b></p>
+</div>
+
+<div id='access_denied'>
+	<p class="cancel" onClick="hide('access_denied')">X</p>
+	<p>Sorry! You dont have enough previlages to view this Project.</p>	
+	<p id="sidetext">To ask to contribute</p> 
+	<button onClick="ask_permission({{=auth.user.id}})">Ask the Owner</button>
+</div>
+
+<div id="head1"><h1>Accomplish more, every day.</h1></div>
+<div id="head2"><p>Millons of people rely on <b><i>Project Chaperon</i></b> to get things done...</p></div>
+
+<!--<div id="hello">Search</div>
+<div id="horny">{{=form}}</div>
+<br>{{=target_div}}-->
+
+<!--div id="set">{{=A('Create New Project',_href=URL('default','create_project'),_class="btn btn-primary")}}</div-->
+
+<div id="set">
+	<button onClick="pop('create_task')">Create New Project</button>
+</div>
+<div id='create_task'>
+
+    <div id="cross" onClick="hide('create_task')">X</div>
+    {{=pform}}
+    
+    
+</div>
+
+<ul class="hello1">
+	{{for i,row in enumerate(rows):}}
+	{{if i==items_per_page: break}}
+	<li>
+		{{if accessible[row.id]==1 or row.accessing[-1]=="public":}}
+		<a href={{=URL('main',args=row.id)}}  class="hello" id="project_"{{=row.id}}>
+			{{else:}}
+			<a onClick="pop2('access_denied',{{=row.id}})"  class="hello" id="project_"{{=row.id}}>
+				{{pass}}
+				<!--h1>{{=row.id}}</h1>
+		<h1>{{=accessible[row.id]}}</h1>
+		<h2>{{=row.accessing[-1]}}</h2-->
+		<h2>{{=row.name}}</h2>
+		<p>Created by.. {{=row.created_by.first_name}} {{=prettydate(row.created_on)}}</p>
+			</a>
+	</li>
+	{{pass}}
+	{{pass}}
+</ul>
+
+{{if page:}}
+<a href="{{=URL(args=[page-1])}}" id="prev">PREVIOUS</a>
+{{pass}}
+{{if len(rows)>items_per_page:}}
+<a href="{{=URL(args=[page+1])}}" id="next">NEXT</div></a>
+{{pass}}
