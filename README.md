@@ -1,2 +1,3 @@
 # About
-A "trello" like task management app based on MVC architecture developed using Web2py, Python, Javascript, Jquery, HTML5 and CSS
+A basic task management app developed using Web2py, Javascript, HTML and CSS that allows people to work effectively in a visually collaborative environment.
+
